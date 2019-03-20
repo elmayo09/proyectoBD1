@@ -11,7 +11,7 @@
 
 
    
-    .<!-- Nav tabs -->
+    <!-- Nav tabs -->
     <ul class="nav nav-tabs" id="navId">
         <li class="nav-item">
             <a href="index.php" class="nav-link active">nuevo empleado</a>
