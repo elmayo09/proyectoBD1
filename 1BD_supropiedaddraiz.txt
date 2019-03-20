@@ -1,0 +1,236 @@
+﻿CREATE DATABASE supropiedaddraiz;
+
+USE supropiedaddraiz;
+
+
+/*----------------------TABLA EMPLEADO----------------*/
+CREATE TABLE empleado(
+	cedula INT(13) PRIMARY KEY CHECK(cedula>0), 
+	nombre VARCHAR(30) NOT NULL, 
+	telefono INT(13) NOT NULL CHECK(telefono>0), 
+	fecha_nacimiento DATE NOT NULL, 
+	cuenta_banco VARCHAR(30) NOT NULL UNIQUE, 
+	correo VARCHAR(30),
+	tipo VARCHAR(14) NOT NULL CHECK(tipo IN ('administrador','funcionario')),
+	direccion VARCHAR(20),
+	reputacion INT(3)
+	)ENGINE = InnoDB;
+
+
+ALTER TABLE empleado
+ADD CONSTRAINT nacimiento1 CHECK(YEAR(fnacimiento)<(YEAR(CURRENT_DATE())-18));
+/*---------------------------------------------------------------------------*/
+
+
+
+
+/*-----------------------------TABLA CALIFICACION-------------------*/
+CREATE TABLE calificacion(
+	codigo INT(10) PRIMARY KEY AUTO_INCREMENT,
+	creador INT(13) NOT NULL,
+	asignatario INT(13) NOT NULL,
+	puntuacion INT(1) NOT NULL CHECK(puntuacion>=0 AND puntuacion<6),
+	comentario VARCHAR(150) NOT NULL,
+	categoria VARCHAR(26) NOT NULL CHECK(categoria IN('calidad del trabajo', 'responsabilidad', 'conocimiento del trabajo', 'cooperación')),
+	FOREIGN KEY (creador) REFERENCES empleado(cedula),
+	FOREIGN KEY (asignatario) REFERENCES empleado(cedula)
+	)ENGINE = InnoDB;
+
+ALTER TABLE calificacion
+ADD CHECK(creador<>asignatario);
+/*--------------------------------------------------------------------------*/
+
+
+
+
+
+
+/*----------------------TABLA CONTRATO LABORAL----------------*/
+CREATE TABLE contrato_laboral(
+	codigo INT(10) PRIMARY KEY CHECK(codigo>0),
+	cedula INT(13) NOT NULL CHECK(cedula>0),
+	salario INT(10) NOT NULL CHECK(salario>0), 
+	fingreso DATE NOT NULL, 
+	ffin DATE,
+	FOREIGN KEY (cedula) REFERENCES empleado(cedula)
+	)ENGINE = InnoDB;
+
+ALTER TABLE contrato_laboral
+ADD CONSTRAINT fechas CHECK(fingreso<=ffin);
+/*------------------------------------------------------------*/
+
+
+
+
+
+
+
+/*-----------------------------TABLA USUARIO-----------------------*/
+CREATE TABLE usuario(
+	cedula INT(13) PRIMARY KEY CHECK(cedula>0),
+	nombre VARCHAR(30) NOT NULL,
+	telefono INT(13) NOT NULL CHECK(telefono>0),
+	correo VARCHAR(30),
+	fnacimiento DATE NOT NULL,
+	tipo VARCHAR(11) NOT NULL
+	)ENGINE = InnoDB;
+
+ALTER TABLE usuario
+ADD CONSTRAINT nacimiento CHECK(YEAR(fnacimiento)<(YEAR(CURRENT_DATE())-18));
+/*------------------------------------------------------------------*/
+
+
+
+
+
+/*-------------------------------TABLA PROPIETARIO----------------------*/
+CREATE TABLE propietario(
+	cedula INT(13) PRIMARY KEY CHECK(cedula>0),
+	direccion VARCHAR(20) NOT NULL,
+	FOREIGN KEY (cedula) REFERENCES usuario(cedula)
+	)ENGINE = InnoDB;
+/*----------------------------------------------------------------------*/
+
+
+
+
+
+
+/*-------------------------------TABLA CLIENTE-------------------------*/
+CREATE TABLE cliente(
+	cedula INT(13) PRIMARY KEY CHECK(cedula>0),
+	cuenta_banco VARCHAR(30) NOT NULL,
+	cedula_codeudor INT(13) NOT NULL CHECK(cedula_codeudor>0),
+	FOREIGN KEY (cedula) REFERENCES usuario(cedula)
+	)ENGINE = InnoDB;
+/*---------------------------------------------------------------------*/
+
+
+
+
+
+/*------------------------TABLA UNIDAD RESIDENCIAL-----------------------*/
+CREATE TABLE unidad_residencial(
+	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
+	parqueadero VARCHAR(2) NOT NULL CHECK(parqueadero IN ('si','no')),
+	gimnasio VARCHAR(2) NOT NULL CHECK(gimnasio IN ('si','no')),
+	sauna VARCHAR(2) NOT NULL CHECK(sauna IN ('si','no')),
+	piscina VARCHAR(2) NOT NULL CHECK(piscina IN ('si','no')),
+	cancha VARCHAR(2) NOT NULL CHECK(cancha IN ('si','no')),
+	precio_administracion INT(10) NOT NULL CHECK(precio_administracion>=0),
+	seguridad VARCHAR(2) NOT NULL CHECK(seguridad IN ('si','no')),
+	cedula_administrador INT(13) NOT NULL,
+	FOREIGN KEY (cedula_administrador) REFERENCES empleado(cedula)
+	)ENGINE = InnoDB;
+/*-------------------------------------------------------------------------*/
+
+
+
+
+/*-----------------------TABLA TORRE-------------------------------*/
+CREATE TABLE torre(
+	numero INT(4) CHECK(numero>0),
+	codigo_unidad INT(13) CHECK(codigo_unidad>0),
+	pisos INT(3) NOT NULL CHECK(pisos>0),
+	ascensor VARCHAR(2) CHECK(ascensor IN ('si','no')),
+	anti_sismos VARCHAR(2) CHECK(anti_sismos IN ('si','no')),
+	terraza VARCHAR(2) CHECK(terraza IN ('si','no')),
+	PRIMARY KEY (numero, codigo_unidad),
+	FOREIGN KEY (codigo_unidad) REFERENCES unidad_residencial(codigo)
+	)ENGINE = InnoDB;
+/*---------------------------------------------------------------------*/
+
+
+
+
+/*-------------------------------TABLA INMUEBLE----------------------*/
+CREATE TABLE inmueble(
+	numero_predial INT(13) PRIMARY KEY CHECK(numero_predial>0),
+	numero_habitaciones INT(3) NOT NULL CHECK(numero_habitaciones>0),
+	numero_baños INT(3) NOT NULL CHECK(numero_baños>0),
+	valoracion INT(3),
+	area INT(4) NOT NULL CHECK(area>0),
+	cedula_propietario INT(13) NOT NULL CHECK(cedula_propietario>0),
+	direccion VARCHAR(20) NOT NULL,
+	estrato INT(1) NOT NULL CHECK(estrato>0),
+	FOREIGN KEY (cedula_propietario) REFERENCES propietario(cedula)
+	)ENGINE = InnoDB;
+/*-------------------------------------------------------------------*/
+
+
+/*-------------------------------TABLA CASA---------------------------*/
+CREATE TABLE casa(
+	numero_predial INT(13) PRIMARY KEY CHECK(numero_predial>0),
+	jardin VARCHAR(2) NOT NULL CHECK(jardin IN ('si','no')),
+	garaje VARCHAR(2) NOT NULL CHECK(garaje IN ('si','no')),
+	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial)
+	)ENGINE = InnoDB;
+/*------------------------------------------------------------------/*
+
+
+/*---------------------------TABLA APARTAMENTO---------------------*/
+CREATE TABLE apartamento(
+	numero_predial INT(13) PRIMARY KEY CHECK(numero_predial>0),
+	torre INT(4) NOT NULL CHECK(torre>0),
+	balcon VARCHAR(2) CHECK(balcon IN ('si','no')),
+	numero_apartamento INT(4) NOT NULL CHECK(numero_apartamento>0),
+	piso INT(3) NOT NULL,
+	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial),
+	FOREIGN KEY (torre) REFERENCES torre(numero)
+	)ENGINE = InnoDB;
+/*--------------------------------------------------------------------*/
+
+
+
+
+/*----------------------TABLA CONTRATO-----------------------------------*/
+CREATE TABLE contrato(
+	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
+	finicio DATE NOT NULL,
+	medio_pago VARCHAR(15) NOT NULL CHECK(medio_pago IN ('consignación','efectivo')),
+	numero_predial INT(13) NOT NULL,
+	cedula_cliente INT(13) NOT NULL,
+	cedula_funcionario INT(13) NOT NULL,
+	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial),
+	FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula),
+	FOREIGN KEY (cedula_funcionario) REFERENCES empleado(cedula)
+	)ENGINE = InnoDB;
+/*-----------------------------------------------------------------------*/
+
+
+
+
+/*------------------------TABLA COMPRAVENTA--------------------------------*/
+CREATE TABLE compraventa(
+	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
+	precio INT(20) NOT NULL CHECK(precio>=0),
+	tipo_pago VARCHAR(10) NOT NULL CHECK(tipo_pago IN ('crédito','contado')),
+	FOREIGN KEY (codigo) REFERENCES contrato(codigo)
+	)ENGINE = InnoDB;
+/*----------------------------------------------------------------------*/
+
+
+
+
+/*-------------------------TABLA ARRENDAMIENTO------------------------------*/
+CREATE TABLE arrendamiento(
+	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
+	ffin DATE NOT NULL,
+	mensualidad INT(10) NOT NULL CHECK(mensualidad>=0),
+	agencia VARCHAR(2) NOT NULL,
+	FOREIGN KEY (codigo) REFERENCES contrato(codigo)
+	)ENGINE = InnoDB;
+/*-------------------------------------------------------------------------*/
+
+
+
+/*   VARIOS/PRUEBAS
+ALTER TABLE propietario
+ADD CONSTRAINT cf_propietario
+FOREIGN KEY (cedula) REFERENCES usuario(cedula);
+
+ALTER TABLE contrato_laboral 
+ADD CONSTRAINT fechafin_mayor
+CHECK(ffin>=fingreso);
+
+*/
