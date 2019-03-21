@@ -235,26 +235,41 @@ CHECK(ffin>=fingreso);
 
 */
 use supropiedaddraiz;
-
+a)i)
 SELECT *
   FROM empleado e
  WHERE NOT EXISTS (SELECT NULL
                      FROM calificacion c
                     WHERE e.cedula = c.asignatario);
-
-SELECT e.cedula, e.nombre, t.total 
+------------------------------------------------------
+a)ii)
+(SELECT e.cedula, e.nombre, t.total 
   FROM empleado AS e,(SELECT creador,COUNT(*) AS total FROM calificacion GROUP BY creador) AS t
-  WHERE e.cedula=t.creador;
+  WHERE e.cedula=t.creador)
+UNION
+(SELECT e.cedula, e.nombre, 0 AS total
+FROM empleado AS e
+where not exists(SELECT 1
+		FROM calificacion as c
+		where c.creador=e.cedula))
 
 
 
-consulta c)
+
+consulta a)iii)
 SELECT empleado.* FROM empleado, (SELECT asignatario,COUNT(*)
-             from(SELECT asignatario,COUNT(*) AS t
-                 FROM calificacion AS c,empleado as e 
-                 WHERE e.cedula=c.asignatario
-                 GROUP BY(categoria)
-                 HAVING t>1) as cc
-             	 
-             HAVING COUNT(*)<2 ) AS nuevo
+             from(SELECT asignatario,categoria,COUNT(*) AS t
+                   FROM calificacion AS c,empleado as e 
+                   WHERE e.cedula=c.asignatario
+                   GROUP BY(categoria)) as cc
+              WHERE cc.t>1
+	      GROUP BY(asignatario)
+	     
+             HAVING COUNT(*)=1 ) AS nuevo
 WHERE empleado.cedula=nuevo.asignatario
+
+
+select  * FROM     
+	(SELECT asignatario, categoria
+     	  FROM calificacion
+	    )
