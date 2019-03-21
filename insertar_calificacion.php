@@ -35,7 +35,7 @@ else{
 	$result = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
  	if($result){
-        header ("Location: index.php");
+        header ("Location: nueva_calificacion.php");
         
          
  	}else{
