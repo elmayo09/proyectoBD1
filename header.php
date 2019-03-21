@@ -7,17 +7,21 @@
     <title>SuPropiedadRaiz</title>
 </head>
 
-<body>
+<body class="p-3 mb-2 bg-secondary text-white>
 
 
    
     <!-- Nav tabs -->
+    <nav class="navbar navbar-default" role="navigation">
     <ul class="nav nav-tabs" id="navId">
-        <li class="nav-item">
-            <a href="index.php" class="nav-link active">nuevo empleado</a>
+        <li class="nav-bar">
+            <a href="index.php" class="nav-link active">Nuevo empleado</a>
         </li>
-        <li class="nav-item">
-            <a href="nueva_calificacion.php" class="nav-link">nueva calificacion</a>
+        <li class="nav-bar">
+            <a href="nueva_calificacion.php" class="nav-link active">Nueva calificacion</a>
+        </li>
+        <li class="nav-bar">
+            <a href="consultas.php" class="nav-link active">Consultas</a>
         </li>
     </ul>
     
@@ -36,3 +40,4 @@
             $(this).tab('show');
         });
     </script>
+</nav>

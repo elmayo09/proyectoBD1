@@ -234,3 +234,14 @@ ADD CONSTRAINT fechafin_mayor
 CHECK(ffin>=fingreso);
 
 */
+use supropiedaddraiz;
+
+SELECT *
+  FROM empleado e
+ WHERE NOT EXISTS (SELECT NULL
+                     FROM calificacion c
+                    WHERE e.cedula = c.asignatario);
+
+SELECT e.cedula, e.nombre, t.total 
+  FROM empleado AS e,(SELECT creador,COUNT(*) AS total FROM calificacion GROUP BY creador) AS t
+  WHERE e.cedula=t.creador;
