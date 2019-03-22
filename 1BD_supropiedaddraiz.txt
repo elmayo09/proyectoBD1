@@ -257,15 +257,15 @@ where not exists(SELECT 1
 
 
 consulta a)iii)
-SELECT empleado.* FROM empleado, (SELECT asignatario,COUNT(*)
-             from(SELECT asignatario,categoria,COUNT(*) AS t
-                   FROM calificacion AS c,empleado as e 
-                   WHERE e.cedula=c.asignatario
-                   GROUP BY(categoria)) as cc
-              WHERE cc.t>1
-	      GROUP BY(asignatario)
-	     
-             HAVING COUNT(*)=1 ) AS nuevo
-WHERE empleado.cedula=nuevo.asignatario
-
+SELECT creador
+FROM
+(SELECT DISTINCT c.categoria,c.creador
+FROM calificacion AS c INNER JOIN
+(SELECT creador
+FROM calificacion
+GROUP BY (creador)
+HAVING COUNT(*)>1) as s
+ON c.creador= s.creador) AS resultado
+GROUP BY creador
+HAVING COUNT(*)=1;
 
