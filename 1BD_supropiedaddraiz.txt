@@ -257,7 +257,7 @@ where not exists(SELECT 1
 
 
 consulta a)iii)
-SELECT creador
+SELECT * FROM empleado WHERE cedula IN(SELECT creador
 FROM
 (SELECT DISTINCT c.categoria,c.creador
 FROM calificacion AS c INNER JOIN
@@ -267,5 +267,5 @@ GROUP BY (creador)
 HAVING COUNT(*)>1) as s
 ON c.creador= s.creador) AS resultado
 GROUP BY creador
-HAVING COUNT(*)=1;
+HAVING COUNT(*)=1);
 
