@@ -23,6 +23,9 @@
         <li class="nav-bar">
             <a href="consultas.php" class="nav-link active">Consultas</a>
         </li>
+        <li class="nav-bar">
+            <a href="busquedas.php" class="nav-link active">Búsquedas</a>
+        </li>
     </ul>
     
     <!-- Tab panes -->

@@ -13,7 +13,10 @@ require("select_empleados.php");
                     <div class="card-body">
                     	
                         <form action="insertar_calificacion.php" class="form-group" method="post">
-
+                            <div class="form-group">
+                                <label for="">Codigo*</label>
+                                <input type="text" name="codigo" id="codigo" class="form-control" required> 
+                    </div>
                         	<div class="form-group">
                             <label for="cedula_empleado">Tu cédula*</label>
                                 <select class="custom-select" name='cedula_creador' >
