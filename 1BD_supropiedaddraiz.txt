@@ -269,3 +269,27 @@ ON c.creador= s.creador) AS resultado
 GROUP BY creador
 HAVING COUNT(*)=1);
 
+
+
+
+
+
+
+
+
+prototipo consulta):
+
+	select * 
+	from empleado 
+	where cedula IN
+	(select cedula 
+	 from
+		(select creador as cedula, categoria, count(*) as c
+		from calificacion 
+		group by creador, categoria
+		having count(*)>1) as FILTRO1
+			NATURAL JOIN
+		(select creador as cedula, categoria, count(creador) as c
+		from calificacion
+		group by creador) as FILTRO2);
+
