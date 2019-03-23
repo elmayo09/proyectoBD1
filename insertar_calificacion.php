@@ -40,7 +40,9 @@ else{
 	$result = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
  	if($result){
-        header ("Location: nueva_calificacion.php");
+        echo '<div class="alert alert-primary" role="alert">
+  			Creacion de calificacion exitosa!
+			</div>';
         
          
  	}else{

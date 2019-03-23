@@ -128,7 +128,7 @@ $result = mysqli_query($conn, $query) or
       <thead class="thead-dark">
                     <tr>
                         <div style="color:white">
-                        <h4 >Empleados que han recibido todas las calificaciones de la misma categoria
+                        <h4 >Empleados que han creado todas las calificaciones de la misma categoria(mas de una)
                        </h4>
                        </div>
                     </tr>

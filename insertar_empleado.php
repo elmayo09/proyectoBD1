@@ -27,11 +27,13 @@ else if(strtotime($fecha_nacimiento)>strtotime("01 January 2001")){
 
 else{
 	$query="INSERT INTO `empleado`(`cedula`,`nombre`,`telefono`,`correo`,`cuenta_banco`,`fecha_nacimiento`,`tipo`,`direccion`,`reputacion`)
- 	VALUES ('$cedula','$nombre','$telefono','$correo','$cuenta_banco','$fecha_nacimiento','$tipo','a','0')";
+ 	VALUES ('$cedula','$nombre','$telefono','$correo','$cuenta_banco','$fecha_nacimiento','$tipo',Null,Null)";
 	$result = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
  	if($result){
-        header ("Location: index.php");
+        echo '<div class="alert alert-primary" role="alert">
+  			Creacion de empleado exitoso!
+			</div>';
         
          
  	}else{

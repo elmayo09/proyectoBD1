@@ -1,6 +1,5 @@
-<?php
-
-include("header.php");
+<?php 
+require("header.php");
 
 ?>
 
@@ -9,15 +8,15 @@ include("header.php");
 
         <div class="card-body">
         	
-            <form action="nueva_busqueda.php" class="form-group" method="post">
+            <form action="borrado_sql.php" class="form-group" method="post">
                 <div class="form-group">
-                    <label for="cedula_empleado">Buscar calificaciones realizadas por empleado </label><br>
+                    <label for="cedula_empleado">Borrar empleado </label><br>
 
                         <label>
             	           cedula del empleado:
                        </label>
                        <input type="text" name="cedula_empleado" id="cedula_empleado" class="form-control" required="true"><br> 
-                       <input type="submit" class="btn btn-primary" value="Buscar calificaciones" name="consulta">
+                       <input type="submit" class="btn btn-primary" value="Eliminar empleado" name="consulta">
 
                 </div>
 
@@ -32,15 +31,15 @@ include("header.php");
 
         <div class="card-body">
             
-            <form action="nueva_busqueda.php" class="form-group" method="post">
+            <form action="borrado_sql.php" class="form-group" method="post">
                 <div class="form-group">
-                    <label for="cedula_empleado">Buscar empleados que han realizado calificaciones de la misma categoria del codigo:</label><br>
+                    <label for="calificacion">Borrar calificacion</label><br>
 
                         <label>
-                           codigo calificacion:
+                           codigo calificacion a borrar:
                        </label>
                        <input type="text" name="codigo_calificacion" id="codigo_calificacion" class="form-control" required><br> 
-                       <input type="submit" class="btn btn-primary" value="Buscar" name="consulta">
+                       <input type="submit" class="btn btn-primary" value="Eliminar calificacion" name="consulta">
                     
                 </div>
 

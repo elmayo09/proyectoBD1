@@ -330,3 +330,30 @@ select codigo,categoria,creador,asignatario from calificacion;
 
 
 */
+
+b)ii)
+SELECT w.categoria, e.*
+FROM empleado e NATURAL JOIN (SELECT categoria, creador as cedula
+                             FROM calificacion NATURAL JOIN (SELECT categoria
+                                                            FROM calificacion
+                                                            WHERE codigo=2)as a) as w
+ó
+SELECT w.categoria, e.*
+FROM empleado e NATURAL JOIN (SELECT creador as cedula, categoria
+                FROM calificacion
+                WHERE categoria IN (SELECT categoria
+                                    FROM calificacion
+                                    WHERE codigo=3))as w 
+
+Borrados
+empleado:
+$query="DELETE  FROM calificacion
+		where(creador = ".$c." OR asignatario =".$c.")";
+$query ="DELETE FROM empleado
+		where(cedula=".$c.")";
+
+calificacion:
+$query="DELETE  FROM calificacion
+		where(creador = ".$c." OR asignatario =".$c.")";
+
+

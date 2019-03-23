@@ -21,6 +21,9 @@
             <a href="nueva_calificacion.php" class="nav-link active">Nueva calificacion</a>
         </li>
         <li class="nav-bar">
+            <a href="borrado.php" class="nav-link active">Borrado</a>
+        </li>
+        <li class="nav-bar">
             <a href="consultas.php" class="nav-link active">Consultas</a>
         </li>
         <li class="nav-bar">
