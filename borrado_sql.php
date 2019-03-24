@@ -6,12 +6,8 @@ $consulta= $_POST["consulta"];
 if($consulta=="Eliminar empleado"){
 	$codigo= $_POST["cedula_empleado"];	
 	$c=(string)$codigo;
-	$query="DELETE  FROM calificacion
-		where(creador = ".$c." OR asignatario =".$c.")";
-	$result = mysqli_query($conn, $query) or 
-		die(mysqli_error($conn));
-	$query ="DELETE FROM empleado
-		where(cedula=".$c.")";
+	$query="DELETE  FROM empleado
+		where(creador = ".$c")";
 
 }else{
 	$codigo= $_POST["codigo_calificacion"];	
