@@ -32,8 +32,8 @@ CREATE TABLE calificacion(
 	puntuacion INT(1) NOT NULL CHECK(puntuacion>=0 AND puntuacion<6),
 	comentario VARCHAR(150) NOT NULL,
 	categoria VARCHAR(26) NOT NULL CHECK(categoria IN('calidad del trabajo', 'responsabilidad', 'conocimiento del trabajo', 'cooperación')),
-	FOREIGN KEY (creador) REFERENCES empleado(cedula),
-	FOREIGN KEY (asignatario) REFERENCES empleado(cedula)
+	FOREIGN KEY (creador) REFERENCES empleado(cedula) ON DELETE CASCADE,
+	FOREIGN KEY (asignatario) REFERENCES empleado(cedula) ON DELETE CASCADE
 	)ENGINE = InnoDB;
 
 ALTER TABLE calificacion
