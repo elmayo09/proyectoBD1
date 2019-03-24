@@ -7,7 +7,7 @@ if($consulta=="Eliminar empleado"){
 	$codigo= $_POST["cedula_empleado"];	
 	$c=(string)$codigo;
 	$query="DELETE  FROM empleado
-		where(creador = ".$c")";
+		where(cedula = ".$c.")";
 
 }else{
 	$codigo= $_POST["codigo_calificacion"];	
