@@ -18,7 +18,7 @@ CREATE TABLE empleado(
 
 
 ALTER TABLE empleado
-ADD CONSTRAINT nacimiento1 CHECK(YEAR(fnacimiento)<(YEAR(CURRENT_DATE())-18));
+ADD CONSTRAINT nacimiento1 CHECK(YEAR(fecha_nacimiento)<(YEAR(CURRENT_DATE())-18));
 /*---------------------------------------------------------------------------*/
 
 
@@ -50,13 +50,13 @@ CREATE TABLE contrato_laboral(
 	codigo INT(10) PRIMARY KEY CHECK(codigo>0),
 	cedula INT(13) NOT NULL CHECK(cedula>0),
 	salario INT(10) NOT NULL CHECK(salario>0), 
-	fingreso DATE NOT NULL, 
-	ffin DATE,
+	fecha_ingreso DATE NOT NULL, 
+	fecha_fin DATE,
 	FOREIGN KEY (cedula) REFERENCES empleado(cedula)
 	)ENGINE = InnoDB;
 
 ALTER TABLE contrato_laboral
-ADD CONSTRAINT fechas CHECK(fingreso<=ffin);
+ADD CONSTRAINT fechas CHECK(fecha_ingreso<=fecha_fin);
 /*------------------------------------------------------------*/
 
 
@@ -71,12 +71,12 @@ CREATE TABLE usuario(
 	nombre VARCHAR(30) NOT NULL,
 	telefono INT(13) NOT NULL CHECK(telefono>0),
 	correo VARCHAR(30),
-	fnacimiento DATE NOT NULL,
+	fecha_nacimiento DATE NOT NULL,
 	tipo VARCHAR(11) NOT NULL
 	)ENGINE = InnoDB;
 
 ALTER TABLE usuario
-ADD CONSTRAINT nacimiento CHECK(YEAR(fnacimiento)<(YEAR(CURRENT_DATE())-18));
+ADD CONSTRAINT nacimiento CHECK(YEAR(fecha_nacimiento)<(YEAR(CURRENT_DATE())-18));
 /*------------------------------------------------------------------*/
 
 
@@ -118,7 +118,6 @@ CREATE TABLE unidad_residencial(
 	piscina VARCHAR(2) NOT NULL CHECK(piscina IN ('si','no')),
 	cancha VARCHAR(2) NOT NULL CHECK(cancha IN ('si','no')),
 	precio_administracion INT(10) NOT NULL CHECK(precio_administracion>=0),
-	seguridad VARCHAR(2) NOT NULL CHECK(seguridad IN ('si','no')),
 	cedula_administrador INT(13) NOT NULL,
 	FOREIGN KEY (cedula_administrador) REFERENCES empleado(cedula)
 	)ENGINE = InnoDB;
@@ -172,7 +171,7 @@ CREATE TABLE casa(
 CREATE TABLE apartamento(
 	numero_predial INT(13) PRIMARY KEY CHECK(numero_predial>0),
 	torre INT(4) NOT NULL CHECK(torre>0),
-	balcon VARCHAR(2) CHECK(balcon IN ('si','no')),
+	balcon VARCHAR(2) NOT NULL CHECK(balcon IN ('si','no')),
 	numero_apartamento INT(4) NOT NULL CHECK(numero_apartamento>0),
 	piso INT(3) NOT NULL,
 	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial),
@@ -186,12 +185,10 @@ CREATE TABLE apartamento(
 /*----------------------TABLA CONTRATO-----------------------------------*/
 CREATE TABLE contrato(
 	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
-	finicio DATE NOT NULL,
+	fecha_inicio DATE NOT NULL,
 	medio_pago VARCHAR(15) NOT NULL CHECK(medio_pago IN ('consignación','efectivo')),
-	numero_predial INT(13) NOT NULL,
 	cedula_cliente INT(13) NOT NULL,
 	cedula_funcionario INT(13) NOT NULL,
-	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial),
 	FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula),
 	FOREIGN KEY (cedula_funcionario) REFERENCES empleado(cedula)
 	)ENGINE = InnoDB;
@@ -203,9 +200,11 @@ CREATE TABLE contrato(
 /*------------------------TABLA COMPRAVENTA--------------------------------*/
 CREATE TABLE compraventa(
 	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
+	numero_predial INT(13) NOT NULL CHECK(numero_predial>0),
 	precio INT(20) NOT NULL CHECK(precio>=0),
 	tipo_pago VARCHAR(10) NOT NULL CHECK(tipo_pago IN ('crédito','contado')),
-	FOREIGN KEY (codigo) REFERENCES contrato(codigo)
+	FOREIGN KEY (codigo) REFERENCES contrato(codigo),
+	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial)
 	)ENGINE = InnoDB;
 /*----------------------------------------------------------------------*/
 
@@ -215,13 +214,48 @@ CREATE TABLE compraventa(
 /*-------------------------TABLA ARRENDAMIENTO------------------------------*/
 CREATE TABLE arrendamiento(
 	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
-	ffin DATE NOT NULL,
+	numero_predial INT(13) NOT NULL CHECK(numero_predial>0),
+	fecha_fin DATE NOT NULL,
 	mensualidad INT(10) NOT NULL CHECK(mensualidad>=0),
-	agencia VARCHAR(2) NOT NULL,
-	FOREIGN KEY (codigo) REFERENCES contrato(codigo)
+	agencia VARCHAR(2) NOT NULL CHECK(agencia IN('si','no')),
+	FOREIGN KEY (codigo) REFERENCES contrato(codigo),
+	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial)
 	)ENGINE = InnoDB;
 /*-------------------------------------------------------------------------*/
 
+
+
+
+
+/*---------------------TABLA EMPRESA DE VIGILANCIA----------------------------*/
+CREATE TABLE empresa_vigilancia(
+	nit INT (13) PRIMARY KEY CHECK(nit>0),
+	nombre VARCHAR(30) NOT NULL,
+	direccion VARCHAR(20) NOT NULL,
+	telefono INT(13) NOT NULL CHECK(telefono>0),
+	correo VARCHAR(30) NOT NULL,
+	valor_anual INT(10) NOT NULL CHECK(valor_anual>0)
+	)ENGINE = InnoDB;
+/*-------------------------------------------------------------------------*/
+
+
+
+
+/*-----------------------------TABLA JEFE DE SEGURIDAD------------------*/
+CREATE TABLE jefe_seguridad(
+	credencial INT(13) PRIMARY KEY CHECK(credencial>0),
+	nombre VARCHAR(30) NOT NULL,
+	correo VARCHAR(30) NOT NULL,
+	fecha_nacimiento DATE NOT NULL,
+	nit_empresa INT(13) NOT NULL,
+	codigo_unidad INT(13) NOT NULL,
+	FOREIGN KEY (nit_empresa) REFERENCES empresa_vigilancia(nit),
+	FOREIGN KEY (codigo_unidad) REFERENCES unidad_residencial(codigo)
+	)ENGINE = InnoDB;
+
+ALTER TABLE jefe_seguridad
+ADD CONSTRAINT nacimiento CHECK(YEAR(fecha_nacimiento)<(YEAR(CURRENT_DATE())-18));
+/*---------------------------------------------------------------------*/
 
 
 /*   VARIOS/PRUEBAS
