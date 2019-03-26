@@ -23,7 +23,10 @@ CREATE TABLE empleado(
 ALTER TABLE empleado
 ADD CONSTRAINT nacimiento1 CHECK(YEAR(fecha_nacimiento)<(YEAR(CURRENT_DATE())-18));
 ALTER TABLE empleado
-ADD CHECK(direccion=NULL OR reputacion=NULL);
+ADD CHECK(direccion IS NULL OR reputacion IS NULL);
+ALTER TABLE empleado
+ADD CHECK((tipo = 'administrador' AND direccion IS NOT NULL) OR (tipo = 'funcionario' AND reputacion IS NOT NULL));
+
 /*---------------------------------------------------------------------------*/
 
 
@@ -36,7 +39,7 @@ CREATE TABLE calificacion(
 	asignatario INT(13) NOT NULL,
 	puntuacion INT(1) NOT NULL CHECK(puntuacion>=0 AND puntuacion<6),
 	comentario VARCHAR(150) NOT NULL,
-	categoria VARCHAR(26) NOT NULL CHECK(categoria IN('calidad del trabajo', 'responsabilidad', 'conocimiento del trabajo', 'cooperación')),
+	categoria VARCHAR(26) NOT NULL CHECK(categoria IN('calidad del trabajo', 'responsabilidad', 'conocimiento del trabajo', 'cooperaciÃ³n')),
 	FOREIGN KEY (creador) REFERENCES empleado(cedula) ON DELETE CASCADE,
 	FOREIGN KEY (asignatario) REFERENCES empleado(cedula) ON DELETE CASCADE
 	)ENGINE = InnoDB;
@@ -152,7 +155,7 @@ CREATE TABLE torre(
 CREATE TABLE inmueble(
 	numero_predial INT(13) PRIMARY KEY CHECK(numero_predial>0),
 	numero_habitaciones INT(3) NOT NULL CHECK(numero_habitaciones>0),
-	numero_baños INT(3) NOT NULL CHECK(numero_baños>0),
+	numero_baÃ±os INT(3) NOT NULL CHECK(numero_baÃ±os>0),
 	valoracion INT(3),
 	area INT(4) NOT NULL CHECK(area>0),
 	cedula_propietario INT(13) NOT NULL CHECK(cedula_propietario>0),
@@ -192,7 +195,7 @@ CREATE TABLE apartamento(
 CREATE TABLE contrato(
 	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
 	fecha_inicio DATE NOT NULL,
-	medio_pago VARCHAR(15) NOT NULL CHECK(medio_pago IN ('consignación','efectivo')),
+	medio_pago VARCHAR(15) NOT NULL CHECK(medio_pago IN ('consignaciÃ³n','efectivo')),
 	cedula_cliente INT(13) NOT NULL,
 	cedula_funcionario INT(13) NOT NULL,
 	FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula),
@@ -208,7 +211,7 @@ CREATE TABLE compraventa(
 	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
 	numero_predial INT(13) NOT NULL CHECK(numero_predial>0),
 	precio INT(20) NOT NULL CHECK(precio>=0),
-	tipo_pago VARCHAR(10) NOT NULL CHECK(tipo_pago IN ('crédito','contado')),
+	tipo_pago VARCHAR(10) NOT NULL CHECK(tipo_pago IN ('crÃ©dito','contado')),
 	FOREIGN KEY (codigo) REFERENCES contrato(codigo),
 	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial)
 	)ENGINE = InnoDB;
