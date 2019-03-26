@@ -1,4 +1,7 @@
-锘緾REATE DATABASE supropiedaddraiz;
+CREATE USER 'user'@'localhost' IDENTIFIED BY '1234';
+GRANT ALL PRIVILEGES ON * . * TO 'user'@'localhost';
+
+CREATE DATABASE supropiedaddraiz;
 
 USE supropiedaddraiz;
 
@@ -33,7 +36,7 @@ CREATE TABLE calificacion(
 	asignatario INT(13) NOT NULL,
 	puntuacion INT(1) NOT NULL CHECK(puntuacion>=0 AND puntuacion<6),
 	comentario VARCHAR(150) NOT NULL,
-	categoria VARCHAR(26) NOT NULL CHECK(categoria IN('calidad del trabajo', 'responsabilidad', 'conocimiento del trabajo', 'cooperaci贸n')),
+	categoria VARCHAR(26) NOT NULL CHECK(categoria IN('calidad del trabajo', 'responsabilidad', 'conocimiento del trabajo', 'cooperaci髇')),
 	FOREIGN KEY (creador) REFERENCES empleado(cedula) ON DELETE CASCADE,
 	FOREIGN KEY (asignatario) REFERENCES empleado(cedula) ON DELETE CASCADE
 	)ENGINE = InnoDB;
@@ -149,7 +152,7 @@ CREATE TABLE torre(
 CREATE TABLE inmueble(
 	numero_predial INT(13) PRIMARY KEY CHECK(numero_predial>0),
 	numero_habitaciones INT(3) NOT NULL CHECK(numero_habitaciones>0),
-	numero_ba帽os INT(3) NOT NULL CHECK(numero_ba帽os>0),
+	numero_ba駉s INT(3) NOT NULL CHECK(numero_ba駉s>0),
 	valoracion INT(3),
 	area INT(4) NOT NULL CHECK(area>0),
 	cedula_propietario INT(13) NOT NULL CHECK(cedula_propietario>0),
@@ -189,7 +192,7 @@ CREATE TABLE apartamento(
 CREATE TABLE contrato(
 	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
 	fecha_inicio DATE NOT NULL,
-	medio_pago VARCHAR(15) NOT NULL CHECK(medio_pago IN ('consignaci贸n','efectivo')),
+	medio_pago VARCHAR(15) NOT NULL CHECK(medio_pago IN ('consignaci髇','efectivo')),
 	cedula_cliente INT(13) NOT NULL,
 	cedula_funcionario INT(13) NOT NULL,
 	FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula),
@@ -205,7 +208,7 @@ CREATE TABLE compraventa(
 	codigo INT(13) PRIMARY KEY CHECK(codigo>0),
 	numero_predial INT(13) NOT NULL CHECK(numero_predial>0),
 	precio INT(20) NOT NULL CHECK(precio>=0),
-	tipo_pago VARCHAR(10) NOT NULL CHECK(tipo_pago IN ('cr茅dito','contado')),
+	tipo_pago VARCHAR(10) NOT NULL CHECK(tipo_pago IN ('cr閐ito','contado')),
 	FOREIGN KEY (codigo) REFERENCES contrato(codigo),
 	FOREIGN KEY (numero_predial) REFERENCES inmueble(numero_predial)
 	)ENGINE = InnoDB;
@@ -259,136 +262,3 @@ CREATE TABLE jefe_seguridad(
 ALTER TABLE jefe_seguridad
 ADD CONSTRAINT nacimiento CHECK(YEAR(fecha_nacimiento)<(YEAR(CURRENT_DATE())-18));
 /*---------------------------------------------------------------------*/
-
-
-/*   VARIOS/PRUEBAS
-ALTER TABLE propietario
-ADD CONSTRAINT cf_propietario
-FOREIGN KEY (cedula) REFERENCES usuario(cedula);
-
-ALTER TABLE contrato_laboral 
-ADD CONSTRAINT fechafin_mayor
-CHECK(ffin>=fingreso);
-
-*/
-use supropiedaddraiz;
-a)i) ok
-SELECT *
-  FROM empleado e
- WHERE NOT EXISTS (SELECT NULL
-                     FROM calificacion c
-                    WHERE e.cedula = c.asignatario);
-------------------------------------------------------
-a)ii) ok
-(SELECT e.cedula, e.nombre, t.total 
-  FROM empleado AS e,(SELECT creador,COUNT(*) AS total FROM calificacion GROUP BY creador) AS t
-  WHERE e.cedula=t.creador)
-UNION
-(SELECT e.cedula, e.nombre, 0 AS total
-FROM empleado AS e
-where not exists(SELECT 1
-		FROM calificacion as c
-		where c.creador=e.cedula))
-
-
-
-
-consulta a)iii)
-SELECT * FROM empleado WHERE cedula IN(SELECT creador
-FROM
-(SELECT DISTINCT c.categoria,c.creador
-FROM calificacion AS c INNER JOIN
-(SELECT creador
-FROM calificacion
-GROUP BY (creador)
-HAVING COUNT(*)>1) as s
-ON c.creador= s.creador) AS resultado
-GROUP BY creador
-HAVING COUNT(*)=1);
-
-
-
-
-
-select * from calificacion
-where(creador = 1);
-
-/*
-
-
-
-
-
-/*  PRUEBAS INSERCIONES RAPIDAS
-
-
-INSERT INTO EMPLEADO VALUES(1,'A',222,'1999-01-01','222','correo222','funcionario','222',0);
-INSERT INTO EMPLEADO VALUES(2,'B',223,'1999-01-01','223','correo222','funcionario','222',0);
-INSERT INTO EMPLEADO VALUES(3,'C',224,'1999-01-01','224','correo222','funcionario','222',0);
-INSERT INTO EMPLEADO VALUES(4,'D',225,'1999-01-01','225','correo222','funcionario','222',0);
-INSERT INTO EMPLEADO VALUES(5,'E',226,'1999-01-01','226','correo222','funcionario','222',0);
-INSERT INTO EMPLEADO VALUES(6,'F',227,'1999-01-01','227','correo222','funcionario','222',0);
-INSERT INTO EMPLEADO VALUES(7,'G',228,'1999-01-01','2228','correo222','funcionario','222',0);
-
-
-select cedula,nombre from empleado;
-
-INSERT INTO CALIFICACION VALUES(2001,1,2,0,'xd','responsabilidad');
-INSERT INTO CALIFICACION VALUES(2002,1,2,0,'xd','responsabilidad');
-INSERT INTO CALIFICACION VALUES(2003,3,1,0,'xd','cooperaci贸n');
-INSERT INTO CALIFICACION VALUES(2004,4,5,0,'xd','calidad del trabajo');
-INSERT INTO CALIFICACION VALUES(2005,5,6,0,'xd','conocimiento del trabajo');
-INSERT INTO CALIFICACION VALUES(2006,5,1,0,'xd','responsabilidad');
-INSERT INTO CALIFICACION VALUES(2007,4,1,0,'xd','calidad del trabajo');
-INSERT INTO CALIFICACION VALUES(2008,1,3,0,'xd','responsabilidad');
-INSERT INTO CALIFICACION VALUES(2009,7,3,0,'xd','responsabilidad');
-INSERT INTO CALIFICACION VALUES(2010,7,1,0,'xd','responsabilidad');
-INSERT INTO CALIFICACION VALUES(2011,7,2,0,'xd','z');
-
-
-select codigo,categoria,creador,asignatario from calificacion;
-
-
-
-	select * 
-	from empleado 
-	where cedula IN
-	(select cedula 
-	 from
-		(select creador as cedula, categoria, count(*) as c
-		from calificacion 
-		group by creador, categoria
-		having count(*)>1) as FILTRO1
-			NATURAL JOIN
-		(select creador as cedula, categoria, count(creador) as c
-		from calificacion
-		group by creador) as FILTRO2);
-
-
-
-*/
-
-b)ii)
-SELECT w.categoria, e.*
-FROM empleado e NATURAL JOIN (SELECT categoria, creador as cedula
-                             FROM calificacion NATURAL JOIN (SELECT categoria
-                                                            FROM calificacion
-                                                            WHERE codigo=2)as a) as w
-贸
-SELECT w.categoria, e.*
-FROM empleado e NATURAL JOIN (SELECT creador as cedula, categoria
-                FROM calificacion
-                WHERE categoria IN (SELECT categoria
-                                    FROM calificacion
-                                    WHERE codigo=3))as w 
-
-Borrados
-empleado:
-$query="DELETE  FROM calificacion
-		where(creador = ".$c." OR asignatario =".$c.")";
-$query ="DELETE FROM empleado
-		where(cedula=".$c.")";
-
-calificacion:
-$query="DELETE  FROM calificacion
-		where(creador = ".$c." OR asignatario =".$c.")";

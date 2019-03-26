@@ -19,7 +19,7 @@ include("header.php");
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="Empleados que han recibido todas las calificaciones de la misma categoria" name=consulta>
+                    <input type="submit" class="btn btn-primary" value="Empleados que han creado todas las calificaciones de la misma categoria" name=consulta>
                 </div>
         	</form>
         </div>
